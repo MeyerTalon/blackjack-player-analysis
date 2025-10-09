@@ -1,5 +1,4 @@
-# blackjack-player-analysis
-An evaluation of a blackjack player's play style compared to Perfect Basic Strategy (PBS). 
+# Development Notes
 
 ## Implementation Plan and Acceptance Criteria
 
@@ -35,15 +34,15 @@ The game will be Classic Blackjack:
 Key Rules:
 
 - Dealer receives two cards (one face-up, one face-down).
-- Dealer must hit on soft 17 (H17).
+- Dealer must hit on soft 17 (H17), stand on hard 17.
 - Player blackjack pays 3:2.
 - Doubling down allowed on any two cards.
 - Split once.
+- Surrendering allowed.
 - 6 decks.
+- "Blackjack" hand (A + any 10) pays out 1.5x
 
 House Edge: ~0.5% with optimal basic strategy.
-
-
 
 - One question that arose during development was how to classify players. Obviously there is player style; aggressive, conservative, or neutral. But then there's betting size and player strategy as well. Is this player a low roller, medium roller, or high roller (whale)? Is this player following a particular strategy like PBS? Is it likely that this player is card counting? 
 - Dealer will hit on soft 17.
