@@ -4,7 +4,7 @@ An evaluation of a blackjack player's play style compared to Perfect Basic Strat
 ## Implementation Plan and Acceptance Criteria
 
 1) Synthetic Data Generation
-   1) Use gpt-oss-20b to act as a blackjack player.
+   1) Create a blackjack game simulator using gpt-oss-20b to act as a blackjack player.
    2) Spin up 1-7 players per game, use prompt engineering to set player types (conservative, aggressive, neutral, etc)
    3) Play 20-40 games of blackjack, save the finished game data in csv format.
 2) Analyze Blackjack Data
