@@ -1,0 +1,4 @@
+player_id,decisions,deviations,conservative_deviations,aggressive_deviations,style
+0,26,9,8,1,Conservative
+1,29,9,1,8,Aggressive
+2,25,10,6,2,Conservative

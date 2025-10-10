@@ -45,6 +45,8 @@ class Shoe:
         self.need_shuffle = False
 
     def shuffle(self) -> None:
+        self._cards_init = make_deck() * self.decks
+        self.cards = list(self._cards_init)
         self.rng.shuffle(self.cards)
         self.dealt = 0
 
@@ -269,9 +271,12 @@ def play_round(
                 "player_actions": per_player[i]["actions"],
             })
         # Return without dealer play since hand ends on peeked BJ
+        dealer_hand = Hand(cards=[dealer_up, dealer_hole], wager=0.0)
         return bankrolls, {
             **updated_stats,
-            "dealer_hand": Hand(cards=[dealer_up, dealer_hole], wager=0.0),
+            "dealer_hand": dealer_hand,
+            "dealer_total": dealer_hand.best_total(),  # 21
+            "dealer_upcard": dealer_up,
         }
 
     # Player turns (left-to-right)
@@ -384,7 +389,7 @@ def play_round(
             # per-hand settlement
             if h.is_surrendered:
                 total_return += 0.5 * h.wager
-            elif h.is_blackjack() and not (split_rank(h.cards[0]) == "A" and h.originated_from_split):
+            elif h.is_blackjack() and not h.originated_from_split:
                 # Natural blackjack always pays 3:2 (unless dealer also had BJ, already handled in peek)
                 total_return += (1.0 + bj_num / bj_den) * h.wager
             elif h.is_busted():
@@ -405,6 +410,7 @@ def play_round(
             "player_actions": per_player[i]["actions"],
         })
 
+    # Check if shoe needs to be re-shuffled
     return bankrolls, table_stats
 
 
@@ -435,6 +441,9 @@ def play_many(
     for i in range(1, n_rounds + 1):
         bankrolls_before = bankrolls.copy()
         bankrolls_after, stats = play_round(rules, shoe, bankrolls, base_bets, players, client)
+        # Check if shoe needs to be shuffled
+        if shoe.need_shuffle:
+            shoe.shuffle()
         game_results.append(stats)
         append_round_to_csv(
             table_stats=stats,
@@ -444,6 +453,7 @@ def play_many(
             bankrolls_before=bankrolls_before,
             bankrolls_after=bankrolls_after,
         )
+        print(f'Completed round: {i}', ' ' * 5, f'Bankrolls: {bankrolls_after}')
     print(f"\nFinal bankrolls: {bankrolls}")
 
 def main():

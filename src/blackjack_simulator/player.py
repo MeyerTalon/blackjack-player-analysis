@@ -120,8 +120,14 @@ class RandomPlayer:
     def __init__(self, rng: Optional[random.Random] = None):
         self.rng = rng or random.Random()
 
-    def decide(self, legal: Iterable[Action]) -> Action:
-        legal = list(legal)
+    def decide(
+            self,
+            rules: BlackjackRules,
+            player_hand: HandView,
+            dealer_upcard: str,
+            legal_actions: Iterable[Action],
+            client: Client) -> Action:
+        legal = list(legal_actions)
         return self.rng.choice(legal)
 
 
