@@ -6,8 +6,98 @@ import re
 import subprocess
 import shutil
 from pathlib import Path
+import textwrap
+import ollama
 
 # ---- Helpers for LaTeX ----
+
+def _build_player_summary_prompt(
+    pid: int,
+    sess_row: dict,
+    style_row: dict,
+    top_devs: list[dict],
+) -> str:
+    """
+    Create a compact prompt for Ollama to summarize one player's session.
+    Expect a single paragraph (~120–180 words), non-technical, actionable.
+    """
+    rounds = int(sess_row.get("rounds", 0))
+    total_wager = float(sess_row.get("total_wager", 0.0))
+    total_result = float(sess_row.get("total_result", 0.0))
+    realized = float(sess_row.get("realized_house_edge_pct", 0.0))
+    exp_pbs = float(sess_row.get("expected_house_edge_pbs_pct", 0.0))
+    exp_actual = float(sess_row.get("expected_house_edge_actual_pct", 0.0))
+    added = float(sess_row.get("expected_penalty_addition_pct", 0.0))
+    style = str(style_row.get("style", "Neutral"))
+    dev_lines = []
+    for d in top_devs:
+        inc = (float(d.get("penalty_pct") or 0.0) * 100.0)
+        cards = d.get("player_cards", "")
+        up = d.get("dealer_upcard", "")
+        act = d.get("action_taken", "")
+        pbs = d.get("pbs_action", "")
+        dev_lines.append(f"- {cards} vs {up}: took {act}, PBS {pbs}, +{inc:.2f}% edge")
+
+    dev_text = "\n".join(dev_lines) if dev_lines else "- (no notable deviations found)"
+
+    return textwrap.dedent(f"""
+    You are writing a brief executive summary for a blackjack player’s session.
+    Keep it to a single paragraph (~120–180 words), friendly and actionable.
+    Do not use markdown bullets in the final paragraph; just write prose.
+    In your response use only alphanumerics and punctuation, no special Unicode characters or emojis.
+
+    Player ID: {pid}
+    Rounds: {rounds}
+    Total wager: ${total_wager:,.2f}
+    Net result: {total_result:+.2f}
+    Realized house edge (from outcomes): {realized:.2f}%
+    Expected house edge (PBS baseline): {exp_pbs:.2f}%
+    Expected house edge (Actual with deviations): {exp_actual:.2f}% 
+    Added by deviations (approx.): {added:.2f}%
+    Style classification: {style}
+
+    Most impactful deviations (approximate edge increase):
+    {dev_text}
+
+    Please:
+    - Put these numbers into plain English (no tables).
+    - Mention the player’s style and what it implies about decision-making.
+    - Name one or two specific habits to fix (based on deviations list).
+    - Avoid jargon; explain any terms briefly (e.g., 'house edge').
+    - Only summarize the facts, do NOT give advice on how the player can improve their play.
+    - Output ONE paragraph only.
+    """).strip()
+
+def _ollama_summarize(prompt: str, model: str = "gpt-oss:20b") -> str:
+    """
+    Use Ollama to generate a single-paragraph summary.
+    If Ollama is not running or errors, raise to let caller fallback.
+    """
+    client = ollama.Client()
+    resp = client.generate(model=model, prompt=prompt)
+    text = (resp.get("response") or "").strip()
+    # Collapse linebreaks to keep it a single paragraph
+    return " ".join(text.split())
+
+def _fallback_summary(sess_row: dict, style_row: dict) -> str:
+    """Deterministic backup if Ollama fails."""
+    rounds = int(sess_row.get("rounds", 0))
+    total_wager = float(sess_row.get("total_wager", 0.0))
+    total_result = float(sess_row.get("total_result", 0.0))
+    realized = float(sess_row.get("realized_house_edge_pct", 0.0))
+    exp_pbs = float(sess_row.get("expected_house_edge_pbs_pct", 0.0))
+    exp_actual = float(sess_row.get("expected_house_edge_actual_pct", 0.0))
+    added = float(sess_row.get("expected_penalty_addition_pct", 0.0))
+    style = str(style_row.get("style", "Neutral"))
+    return (
+        f"This report summarizes {rounds} rounds. You wagered ${total_wager:,.2f} in total and finished "
+        f"{total_result:+.2f}. Your realized house edge (based on actual outcomes) was {realized:.2f}%. "
+        f"Under perfect basic strategy, the expected house edge for these rules is about {exp_pbs:.2f}%, while "
+        f"your decision pattern increased that expectation to roughly {exp_actual:.2f}% (+{added:.2f}% from deviations). "
+        f"Overall style: {style}. Focusing on correcting the most frequent/costly deviations should reduce losses; "
+        f"start with standing/hitting and double/split decisions in edge-sensitive spots."
+    )
+
 
 def tex_to_pdf_pdflatex(tex_path: str, clean_aux: bool = False, timeout: int = 180) -> str:
     """
@@ -84,6 +174,7 @@ def _tex_escape_text(s) -> str:
             .replace('%', r'\%')
             .replace('#', r'\#')
             .replace('_', r'\_')
+            .replace('$', r'\$')
             .replace('{', r'\{')
             .replace('}', r'\}')
             .replace('~', r'\textasciitilde{}')
@@ -196,6 +287,35 @@ def generate_latex_reports(
     # ---- Generate one LaTeX report per player ----
     player_ids = sorted(session_summary_df["player_id"].unique().tolist())
     for pid in player_ids:
+
+        # Pull this player's aggregates
+        sess_row = session_summary_df[session_summary_df["player_id"] == pid].iloc[0].to_dict()
+        style_row = players_summary_df[players_summary_df["player_id"] == pid].iloc[0].to_dict()
+
+        # Top 3 most costly deviations for this player
+        dev_p = deviations_df[deviations_df["player_id"] == pid] if not deviations_df.empty else pd.DataFrame()
+        if not dev_p.empty:
+            # Prefer by penalty_pct; if equal, use dollars as tiebreak
+            dev_p = dev_p.assign(
+                _pen_pct=dev_p["penalty_pct"].fillna(0.0),
+                _pen_usd=(dev_p["penalty_pct"].fillna(0.0) * dev_p["base_bet"].fillna(0.0)),
+            ).sort_values(["_pen_pct", "_pen_usd"], ascending=False)
+            top_devs = dev_p.head(3)[
+                ["player_cards", "dealer_upcard", "action_taken", "pbs_action", "penalty_pct"]
+            ].to_dict(orient="records")
+        else:
+            top_devs = []
+
+        # Create summary paragraph with Ollama (fallback if off)
+        try:
+            prompt = _build_player_summary_prompt(int(pid), sess_row, style_row, top_devs)
+            summary_text = _ollama_summarize(prompt)
+        except Exception as e:
+            print(e)
+            summary_text = _fallback_summary(sess_row, style_row)
+
+        summary_section = r"\section*{Executive Summary}" + "\n" + _tex_escape_text(summary_text)
+
         # Filter per-player data
         ss_row = session_summary_df[session_summary_df["player_id"] == pid].iloc[0]
         style_row = players_summary_df[players_summary_df["player_id"] == pid].iloc[0]
@@ -317,6 +437,7 @@ def generate_latex_reports(
 
         tex = "\n".join([
             preamble,
+            summary_section,
             r"\section*{Overview}",
             session_table,
             style_table,
