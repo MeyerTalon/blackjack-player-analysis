@@ -1,11 +1,11 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Iterable, Literal, Dict
+from typing import List, Optional, Tuple, Literal, Dict
 import random
 import argparse
 from src.blackjack_simulator.player import LLMBlackjackPlayer, RandomPlayer
-from src.utils.game_utils import append_round_to_csv
-from src.utils.game_utils import build_players, build_base_bets
+from src.blackjack_simulator.game_utils import append_round_to_csv
+from src.blackjack_simulator.game_utils import build_players, build_base_bets
 import ollama
 from datetime import datetime
 
