@@ -46,3 +46,9 @@ House Edge: ~0.5% with optimal basic strategy.
 
 - One question that arose during development was how to classify players. Obviously there is player style; aggressive, conservative, or neutral. But then there's betting size and player strategy as well. Is this player a low roller, medium roller, or high roller (whale)? Is this player following a particular strategy like PBS? Is it likely that this player is card counting? 
 - Dealer will hit on soft 17.
+- **Assumption**: The players will not care what the previous players were dealt, this will allow us to have the player agents act asynchronously speeding up dataset generation.
+
+## Decision Tree Brainstorm
+
+- Have user select player and round at which to start the decision tree, grow from there
+- 
