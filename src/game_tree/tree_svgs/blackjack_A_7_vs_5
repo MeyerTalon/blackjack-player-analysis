@@ -1,0 +1,1322 @@
+digraph blackjack_tree {
+	fontsize=10 labelloc=t rankdir=TB
+	node [fontname=Helvetica fontsize=9 shape=box style="rounded,filled"]
+	edge [fontname=Helvetica fontsize=9]
+	n0 [label="DECISION
+hand=['A', '7']
+total=18 (soft)
+dealer=5
+EV*=0.2952" fillcolor="#e3f2fd"]
+	n1 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n0 -> n1 [label="stand • p=1.0000"]
+	n2 [label="CHANCE
+hit_draw
+EV=0.1476" fillcolor="#fff3e0"]
+	n0 -> n2 [label="hit_draw • p=1.0000"]
+	n3 [label="DECISION
+hand=['A', '7', 'A']
+total=19 (soft)
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n2 -> n3 [label="p=0.0769"]
+	n4 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n3 -> n4 [label="stand • p=1.0000"]
+	n5 [label="CHANCE
+hit_draw
+EV=0.2030" fillcolor="#fff3e0"]
+	n3 -> n5 [label="hit_draw • p=1.0000"]
+	n6 [label="DECISION
+hand=['A', '7', 'A', 'A']
+total=20 (soft)
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n5 -> n6 [label="p=0.0769"]
+	n7 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n6 -> n7 [label="stand • p=1.0000"]
+	n8 [label="CHANCE
+hit_draw
+EV=0.2563" fillcolor="#fff3e0"]
+	n6 -> n8 [label="hit_draw • p=1.0000"]
+	n9 [label="DECISION
+hand=['A', '7', 'A', '2']
+total=21 (soft)
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n5 -> n9 [label="p=0.0769"]
+	n10 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n9 -> n10 [label="stand • p=1.0000"]
+	n11 [label="CHANCE
+hit_draw
+EV=0.3073" fillcolor="#fff3e0"]
+	n9 -> n11 [label="hit_draw • p=1.0000"]
+	n12 [label="DECISION
+hand=['A', '7', 'A', '3']
+total=12
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n5 -> n12 [label="p=0.0769"]
+	n13 [label="TERMINAL
+{'action': 'stand', 'total': 12}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n12 -> n13 [label="stand • p=1.0000"]
+	n14 [label="CHANCE
+hit_draw
+EV=-0.1933" fillcolor="#fff3e0"]
+	n12 -> n14 [label="hit_draw • p=1.0000"]
+	n15 [label="DECISION
+hand=['A', '7', 'A', '4']
+total=13
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n5 -> n15 [label="p=0.0769"]
+	n16 [label="TERMINAL
+{'action': 'stand', 'total': 13}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n15 -> n16 [label="stand • p=1.0000"]
+	n17 [label="CHANCE
+hit_draw
+EV=-0.2573" fillcolor="#fff3e0"]
+	n15 -> n17 [label="hit_draw • p=1.0000"]
+	n18 [label="DECISION
+hand=['A', '7', 'A', '5']
+total=14
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n5 -> n18 [label="p=0.0769"]
+	n19 [label="TERMINAL
+{'action': 'stand', 'total': 14}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n18 -> n19 [label="stand • p=1.0000"]
+	n20 [label="CHANCE
+hit_draw
+EV=-0.3214" fillcolor="#fff3e0"]
+	n18 -> n20 [label="hit_draw • p=1.0000"]
+	n21 [label="DECISION
+hand=['A', '7', 'A', '6']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n5 -> n21 [label="p=0.0769"]
+	n22 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n21 -> n22 [label="stand • p=1.0000"]
+	n23 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n21 -> n23 [label="hit_draw • p=1.0000"]
+	n24 [label="DECISION
+hand=['A', '7', 'A', '7']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n5 -> n24 [label="p=0.0769"]
+	n25 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n24 -> n25 [label="stand • p=1.0000"]
+	n26 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n24 -> n26 [label="hit_draw • p=1.0000"]
+	n27 [label="DECISION
+hand=['A', '7', 'A', '8']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n5 -> n27 [label="p=0.0769"]
+	n28 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n27 -> n28 [label="stand • p=1.0000"]
+	n29 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n27 -> n29 [label="hit_draw • p=1.0000"]
+	n30 [label="DECISION
+hand=['A', '7', 'A', '9']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n5 -> n30 [label="p=0.0769"]
+	n31 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n30 -> n31 [label="stand • p=1.0000"]
+	n32 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n30 -> n32 [label="hit_draw • p=1.0000"]
+	n33 [label="DECISION
+hand=['A', '7', 'A', 'T']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n5 -> n33 [label="p=0.3077"]
+	n34 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n33 -> n34 [label="stand • p=1.0000"]
+	n35 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n33 -> n35 [label="hit_draw • p=1.0000"]
+	n36 [label="DECISION
+hand=['A', '7', '2']
+total=20 (soft)
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n2 -> n36 [label="p=0.0769"]
+	n37 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n36 -> n37 [label="stand • p=1.0000"]
+	n38 [label="CHANCE
+hit_draw
+EV=0.2563" fillcolor="#fff3e0"]
+	n36 -> n38 [label="hit_draw • p=1.0000"]
+	n39 [label="DECISION
+hand=['A', '7', '2', 'A']
+total=21 (soft)
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n38 -> n39 [label="p=0.0769"]
+	n40 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n39 -> n40 [label="stand • p=1.0000"]
+	n41 [label="CHANCE
+hit_draw
+EV=0.3073" fillcolor="#fff3e0"]
+	n39 -> n41 [label="hit_draw • p=1.0000"]
+	n42 [label="DECISION
+hand=['A', '7', '2', '2']
+total=12
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n38 -> n42 [label="p=0.0769"]
+	n43 [label="TERMINAL
+{'action': 'stand', 'total': 12}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n42 -> n43 [label="stand • p=1.0000"]
+	n44 [label="CHANCE
+hit_draw
+EV=-0.1933" fillcolor="#fff3e0"]
+	n42 -> n44 [label="hit_draw • p=1.0000"]
+	n45 [label="DECISION
+hand=['A', '7', '2', '3']
+total=13
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n38 -> n45 [label="p=0.0769"]
+	n46 [label="TERMINAL
+{'action': 'stand', 'total': 13}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n45 -> n46 [label="stand • p=1.0000"]
+	n47 [label="CHANCE
+hit_draw
+EV=-0.2573" fillcolor="#fff3e0"]
+	n45 -> n47 [label="hit_draw • p=1.0000"]
+	n48 [label="DECISION
+hand=['A', '7', '2', '4']
+total=14
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n38 -> n48 [label="p=0.0769"]
+	n49 [label="TERMINAL
+{'action': 'stand', 'total': 14}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n48 -> n49 [label="stand • p=1.0000"]
+	n50 [label="CHANCE
+hit_draw
+EV=-0.3214" fillcolor="#fff3e0"]
+	n48 -> n50 [label="hit_draw • p=1.0000"]
+	n51 [label="DECISION
+hand=['A', '7', '2', '5']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n38 -> n51 [label="p=0.0769"]
+	n52 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n51 -> n52 [label="stand • p=1.0000"]
+	n53 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n51 -> n53 [label="hit_draw • p=1.0000"]
+	n54 [label="DECISION
+hand=['A', '7', '2', '6']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n38 -> n54 [label="p=0.0769"]
+	n55 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n54 -> n55 [label="stand • p=1.0000"]
+	n56 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n54 -> n56 [label="hit_draw • p=1.0000"]
+	n57 [label="DECISION
+hand=['A', '7', '2', '7']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n38 -> n57 [label="p=0.0769"]
+	n58 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n57 -> n58 [label="stand • p=1.0000"]
+	n59 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n57 -> n59 [label="hit_draw • p=1.0000"]
+	n60 [label="DECISION
+hand=['A', '7', '2', '8']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n38 -> n60 [label="p=0.0769"]
+	n61 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n60 -> n61 [label="stand • p=1.0000"]
+	n62 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n60 -> n62 [label="hit_draw • p=1.0000"]
+	n63 [label="DECISION
+hand=['A', '7', '2', '9']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n38 -> n63 [label="p=0.0769"]
+	n64 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n63 -> n64 [label="stand • p=1.0000"]
+	n65 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n63 -> n65 [label="hit_draw • p=1.0000"]
+	n66 [label="DECISION
+hand=['A', '7', '2', 'T']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n38 -> n66 [label="p=0.3077"]
+	n67 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n66 -> n67 [label="stand • p=1.0000"]
+	n68 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n66 -> n68 [label="hit_draw • p=1.0000"]
+	n69 [label="DECISION
+hand=['A', '7', '3']
+total=21 (soft)
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n2 -> n69 [label="p=0.0769"]
+	n70 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n69 -> n70 [label="stand • p=1.0000"]
+	n71 [label="CHANCE
+hit_draw
+EV=0.3073" fillcolor="#fff3e0"]
+	n69 -> n71 [label="hit_draw • p=1.0000"]
+	n72 [label="DECISION
+hand=['A', '7', '3', 'A']
+total=12
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n71 -> n72 [label="p=0.0769"]
+	n73 [label="TERMINAL
+{'action': 'stand', 'total': 12}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n72 -> n73 [label="stand • p=1.0000"]
+	n74 [label="CHANCE
+hit_draw
+EV=-0.1933" fillcolor="#fff3e0"]
+	n72 -> n74 [label="hit_draw • p=1.0000"]
+	n75 [label="DECISION
+hand=['A', '7', '3', '2']
+total=13
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n71 -> n75 [label="p=0.0769"]
+	n76 [label="TERMINAL
+{'action': 'stand', 'total': 13}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n75 -> n76 [label="stand • p=1.0000"]
+	n77 [label="CHANCE
+hit_draw
+EV=-0.2573" fillcolor="#fff3e0"]
+	n75 -> n77 [label="hit_draw • p=1.0000"]
+	n78 [label="DECISION
+hand=['A', '7', '3', '3']
+total=14
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n71 -> n78 [label="p=0.0769"]
+	n79 [label="TERMINAL
+{'action': 'stand', 'total': 14}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n78 -> n79 [label="stand • p=1.0000"]
+	n80 [label="CHANCE
+hit_draw
+EV=-0.3214" fillcolor="#fff3e0"]
+	n78 -> n80 [label="hit_draw • p=1.0000"]
+	n81 [label="DECISION
+hand=['A', '7', '3', '4']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n71 -> n81 [label="p=0.0769"]
+	n82 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n81 -> n82 [label="stand • p=1.0000"]
+	n83 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n81 -> n83 [label="hit_draw • p=1.0000"]
+	n84 [label="DECISION
+hand=['A', '7', '3', '5']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n71 -> n84 [label="p=0.0769"]
+	n85 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n84 -> n85 [label="stand • p=1.0000"]
+	n86 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n84 -> n86 [label="hit_draw • p=1.0000"]
+	n87 [label="DECISION
+hand=['A', '7', '3', '6']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n71 -> n87 [label="p=0.0769"]
+	n88 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n87 -> n88 [label="stand • p=1.0000"]
+	n89 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n87 -> n89 [label="hit_draw • p=1.0000"]
+	n90 [label="DECISION
+hand=['A', '7', '3', '7']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n71 -> n90 [label="p=0.0769"]
+	n91 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n90 -> n91 [label="stand • p=1.0000"]
+	n92 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n90 -> n92 [label="hit_draw • p=1.0000"]
+	n93 [label="DECISION
+hand=['A', '7', '3', '8']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n71 -> n93 [label="p=0.0769"]
+	n94 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n93 -> n94 [label="stand • p=1.0000"]
+	n95 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n93 -> n95 [label="hit_draw • p=1.0000"]
+	n96 [label="DECISION
+hand=['A', '7', '3', '9']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n71 -> n96 [label="p=0.0769"]
+	n97 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n96 -> n97 [label="stand • p=1.0000"]
+	n98 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n96 -> n98 [label="hit_draw • p=1.0000"]
+	n99 [label="DECISION
+hand=['A', '7', '3', 'T']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n71 -> n99 [label="p=0.3077"]
+	n100 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n99 -> n100 [label="stand • p=1.0000"]
+	n101 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n99 -> n101 [label="hit_draw • p=1.0000"]
+	n102 [label="DECISION
+hand=['A', '7', '4']
+total=12
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n2 -> n102 [label="p=0.0769"]
+	n103 [label="TERMINAL
+{'action': 'stand', 'total': 12}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n102 -> n103 [label="stand • p=1.0000"]
+	n104 [label="CHANCE
+hit_draw
+EV=-0.1933" fillcolor="#fff3e0"]
+	n102 -> n104 [label="hit_draw • p=1.0000"]
+	n105 [label="DECISION
+hand=['A', '7', '4', 'A']
+total=13
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n104 -> n105 [label="p=0.0769"]
+	n106 [label="TERMINAL
+{'action': 'stand', 'total': 13}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n105 -> n106 [label="stand • p=1.0000"]
+	n107 [label="CHANCE
+hit_draw
+EV=-0.2573" fillcolor="#fff3e0"]
+	n105 -> n107 [label="hit_draw • p=1.0000"]
+	n108 [label="DECISION
+hand=['A', '7', '4', '2']
+total=14
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n104 -> n108 [label="p=0.0769"]
+	n109 [label="TERMINAL
+{'action': 'stand', 'total': 14}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n108 -> n109 [label="stand • p=1.0000"]
+	n110 [label="CHANCE
+hit_draw
+EV=-0.3214" fillcolor="#fff3e0"]
+	n108 -> n110 [label="hit_draw • p=1.0000"]
+	n111 [label="DECISION
+hand=['A', '7', '4', '3']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n104 -> n111 [label="p=0.0769"]
+	n112 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n111 -> n112 [label="stand • p=1.0000"]
+	n113 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n111 -> n113 [label="hit_draw • p=1.0000"]
+	n114 [label="DECISION
+hand=['A', '7', '4', '4']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n104 -> n114 [label="p=0.0769"]
+	n115 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n114 -> n115 [label="stand • p=1.0000"]
+	n116 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n114 -> n116 [label="hit_draw • p=1.0000"]
+	n117 [label="DECISION
+hand=['A', '7', '4', '5']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n104 -> n117 [label="p=0.0769"]
+	n118 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n117 -> n118 [label="stand • p=1.0000"]
+	n119 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n117 -> n119 [label="hit_draw • p=1.0000"]
+	n120 [label="DECISION
+hand=['A', '7', '4', '6']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n104 -> n120 [label="p=0.0769"]
+	n121 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n120 -> n121 [label="stand • p=1.0000"]
+	n122 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n120 -> n122 [label="hit_draw • p=1.0000"]
+	n123 [label="DECISION
+hand=['A', '7', '4', '7']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n104 -> n123 [label="p=0.0769"]
+	n124 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n123 -> n124 [label="stand • p=1.0000"]
+	n125 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n123 -> n125 [label="hit_draw • p=1.0000"]
+	n126 [label="DECISION
+hand=['A', '7', '4', '8']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n104 -> n126 [label="p=0.0769"]
+	n127 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n126 -> n127 [label="stand • p=1.0000"]
+	n128 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n126 -> n128 [label="hit_draw • p=1.0000"]
+	n129 [label="DECISION
+hand=['A', '7', '4', '9']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n104 -> n129 [label="p=0.0769"]
+	n130 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n129 -> n130 [label="stand • p=1.0000"]
+	n131 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n129 -> n131 [label="hit_draw • p=1.0000"]
+	n132 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '4', 'T'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n104 -> n132 [label="p=0.3077"]
+	n133 [label="DECISION
+hand=['A', '7', '5']
+total=13
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n2 -> n133 [label="p=0.0769"]
+	n134 [label="TERMINAL
+{'action': 'stand', 'total': 13}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n133 -> n134 [label="stand • p=1.0000"]
+	n135 [label="CHANCE
+hit_draw
+EV=-0.2573" fillcolor="#fff3e0"]
+	n133 -> n135 [label="hit_draw • p=1.0000"]
+	n136 [label="DECISION
+hand=['A', '7', '5', 'A']
+total=14
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n135 -> n136 [label="p=0.0769"]
+	n137 [label="TERMINAL
+{'action': 'stand', 'total': 14}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n136 -> n137 [label="stand • p=1.0000"]
+	n138 [label="CHANCE
+hit_draw
+EV=-0.3214" fillcolor="#fff3e0"]
+	n136 -> n138 [label="hit_draw • p=1.0000"]
+	n139 [label="DECISION
+hand=['A', '7', '5', '2']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n135 -> n139 [label="p=0.0769"]
+	n140 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n139 -> n140 [label="stand • p=1.0000"]
+	n141 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n139 -> n141 [label="hit_draw • p=1.0000"]
+	n142 [label="DECISION
+hand=['A', '7', '5', '3']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n135 -> n142 [label="p=0.0769"]
+	n143 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n142 -> n143 [label="stand • p=1.0000"]
+	n144 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n142 -> n144 [label="hit_draw • p=1.0000"]
+	n145 [label="DECISION
+hand=['A', '7', '5', '4']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n135 -> n145 [label="p=0.0769"]
+	n146 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n145 -> n146 [label="stand • p=1.0000"]
+	n147 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n145 -> n147 [label="hit_draw • p=1.0000"]
+	n148 [label="DECISION
+hand=['A', '7', '5', '5']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n135 -> n148 [label="p=0.0769"]
+	n149 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n148 -> n149 [label="stand • p=1.0000"]
+	n150 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n148 -> n150 [label="hit_draw • p=1.0000"]
+	n151 [label="DECISION
+hand=['A', '7', '5', '6']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n135 -> n151 [label="p=0.0769"]
+	n152 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n151 -> n152 [label="stand • p=1.0000"]
+	n153 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n151 -> n153 [label="hit_draw • p=1.0000"]
+	n154 [label="DECISION
+hand=['A', '7', '5', '7']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n135 -> n154 [label="p=0.0769"]
+	n155 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n154 -> n155 [label="stand • p=1.0000"]
+	n156 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n154 -> n156 [label="hit_draw • p=1.0000"]
+	n157 [label="DECISION
+hand=['A', '7', '5', '8']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n135 -> n157 [label="p=0.0769"]
+	n158 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n157 -> n158 [label="stand • p=1.0000"]
+	n159 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n157 -> n159 [label="hit_draw • p=1.0000"]
+	n160 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '5', '9'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n135 -> n160 [label="p=0.0769"]
+	n161 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '5', 'T'], 'total': 23, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n135 -> n161 [label="p=0.3077"]
+	n162 [label="DECISION
+hand=['A', '7', '6']
+total=14
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n2 -> n162 [label="p=0.0769"]
+	n163 [label="TERMINAL
+{'action': 'stand', 'total': 14}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n162 -> n163 [label="stand • p=1.0000"]
+	n164 [label="CHANCE
+hit_draw
+EV=-0.3214" fillcolor="#fff3e0"]
+	n162 -> n164 [label="hit_draw • p=1.0000"]
+	n165 [label="DECISION
+hand=['A', '7', '6', 'A']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n164 -> n165 [label="p=0.0769"]
+	n166 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n165 -> n166 [label="stand • p=1.0000"]
+	n167 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n165 -> n167 [label="hit_draw • p=1.0000"]
+	n168 [label="DECISION
+hand=['A', '7', '6', '2']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n164 -> n168 [label="p=0.0769"]
+	n169 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n168 -> n169 [label="stand • p=1.0000"]
+	n170 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n168 -> n170 [label="hit_draw • p=1.0000"]
+	n171 [label="DECISION
+hand=['A', '7', '6', '3']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n164 -> n171 [label="p=0.0769"]
+	n172 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n171 -> n172 [label="stand • p=1.0000"]
+	n173 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n171 -> n173 [label="hit_draw • p=1.0000"]
+	n174 [label="DECISION
+hand=['A', '7', '6', '4']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n164 -> n174 [label="p=0.0769"]
+	n175 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n174 -> n175 [label="stand • p=1.0000"]
+	n176 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n174 -> n176 [label="hit_draw • p=1.0000"]
+	n177 [label="DECISION
+hand=['A', '7', '6', '5']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n164 -> n177 [label="p=0.0769"]
+	n178 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n177 -> n178 [label="stand • p=1.0000"]
+	n179 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n177 -> n179 [label="hit_draw • p=1.0000"]
+	n180 [label="DECISION
+hand=['A', '7', '6', '6']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n164 -> n180 [label="p=0.0769"]
+	n181 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n180 -> n181 [label="stand • p=1.0000"]
+	n182 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n180 -> n182 [label="hit_draw • p=1.0000"]
+	n183 [label="DECISION
+hand=['A', '7', '6', '7']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n164 -> n183 [label="p=0.0769"]
+	n184 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n183 -> n184 [label="stand • p=1.0000"]
+	n185 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n183 -> n185 [label="hit_draw • p=1.0000"]
+	n186 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '6', '8'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n164 -> n186 [label="p=0.0769"]
+	n187 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '6', '9'], 'total': 23, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n164 -> n187 [label="p=0.0769"]
+	n188 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '6', 'T'], 'total': 24, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n164 -> n188 [label="p=0.3077"]
+	n189 [label="DECISION
+hand=['A', '7', '7']
+total=15
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n2 -> n189 [label="p=0.0769"]
+	n190 [label="TERMINAL
+{'action': 'stand', 'total': 15}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n189 -> n190 [label="stand • p=1.0000"]
+	n191 [label="CHANCE
+hit_draw
+EV=-0.3855" fillcolor="#fff3e0"]
+	n189 -> n191 [label="hit_draw • p=1.0000"]
+	n192 [label="DECISION
+hand=['A', '7', '7', 'A']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n191 -> n192 [label="p=0.0769"]
+	n193 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n192 -> n193 [label="stand • p=1.0000"]
+	n194 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n192 -> n194 [label="hit_draw • p=1.0000"]
+	n195 [label="DECISION
+hand=['A', '7', '7', '2']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n191 -> n195 [label="p=0.0769"]
+	n196 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n195 -> n196 [label="stand • p=1.0000"]
+	n197 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n195 -> n197 [label="hit_draw • p=1.0000"]
+	n198 [label="DECISION
+hand=['A', '7', '7', '3']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n191 -> n198 [label="p=0.0769"]
+	n199 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n198 -> n199 [label="stand • p=1.0000"]
+	n200 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n198 -> n200 [label="hit_draw • p=1.0000"]
+	n201 [label="DECISION
+hand=['A', '7', '7', '4']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n191 -> n201 [label="p=0.0769"]
+	n202 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n201 -> n202 [label="stand • p=1.0000"]
+	n203 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n201 -> n203 [label="hit_draw • p=1.0000"]
+	n204 [label="DECISION
+hand=['A', '7', '7', '5']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n191 -> n204 [label="p=0.0769"]
+	n205 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n204 -> n205 [label="stand • p=1.0000"]
+	n206 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n204 -> n206 [label="hit_draw • p=1.0000"]
+	n207 [label="DECISION
+hand=['A', '7', '7', '6']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n191 -> n207 [label="p=0.0769"]
+	n208 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n207 -> n208 [label="stand • p=1.0000"]
+	n209 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n207 -> n209 [label="hit_draw • p=1.0000"]
+	n210 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '7', '7'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n191 -> n210 [label="p=0.0769"]
+	n211 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '7', '8'], 'total': 23, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n191 -> n211 [label="p=0.0769"]
+	n212 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '7', '9'], 'total': 24, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n191 -> n212 [label="p=0.0769"]
+	n213 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '7', 'T'], 'total': 25, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n191 -> n213 [label="p=0.3077"]
+	n214 [label="DECISION
+hand=['A', '7', '8']
+total=16
+dealer=5
+EV*=-0.1672" fillcolor="#e3f2fd"]
+	n2 -> n214 [label="p=0.0769"]
+	n215 [label="TERMINAL
+{'action': 'stand', 'total': 16}
+EV=-0.1672" fillcolor="#e8f5e9"]
+	n214 -> n215 [label="stand • p=1.0000"]
+	n216 [label="CHANCE
+hit_draw
+EV=-0.4495" fillcolor="#fff3e0"]
+	n214 -> n216 [label="hit_draw • p=1.0000"]
+	n217 [label="DECISION
+hand=['A', '7', '8', 'A']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n216 -> n217 [label="p=0.0769"]
+	n218 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n217 -> n218 [label="stand • p=1.0000"]
+	n219 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n217 -> n219 [label="hit_draw • p=1.0000"]
+	n220 [label="DECISION
+hand=['A', '7', '8', '2']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n216 -> n220 [label="p=0.0769"]
+	n221 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n220 -> n221 [label="stand • p=1.0000"]
+	n222 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n220 -> n222 [label="hit_draw • p=1.0000"]
+	n223 [label="DECISION
+hand=['A', '7', '8', '3']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n216 -> n223 [label="p=0.0769"]
+	n224 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n223 -> n224 [label="stand • p=1.0000"]
+	n225 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n223 -> n225 [label="hit_draw • p=1.0000"]
+	n226 [label="DECISION
+hand=['A', '7', '8', '4']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n216 -> n226 [label="p=0.0769"]
+	n227 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n226 -> n227 [label="stand • p=1.0000"]
+	n228 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n226 -> n228 [label="hit_draw • p=1.0000"]
+	n229 [label="DECISION
+hand=['A', '7', '8', '5']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n216 -> n229 [label="p=0.0769"]
+	n230 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n229 -> n230 [label="stand • p=1.0000"]
+	n231 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n229 -> n231 [label="hit_draw • p=1.0000"]
+	n232 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '8', '6'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n216 -> n232 [label="p=0.0769"]
+	n233 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '8', '7'], 'total': 23, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n216 -> n233 [label="p=0.0769"]
+	n234 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '8', '8'], 'total': 24, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n216 -> n234 [label="p=0.0769"]
+	n235 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '8', '9'], 'total': 25, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n216 -> n235 [label="p=0.0769"]
+	n236 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '8', 'T'], 'total': 26, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n216 -> n236 [label="p=0.3077"]
+	n237 [label="DECISION
+hand=['A', '7', '9']
+total=17
+dealer=5
+EV*=-0.0449" fillcolor="#e3f2fd"]
+	n2 -> n237 [label="p=0.0769"]
+	n238 [label="TERMINAL
+{'action': 'stand', 'total': 17}
+EV=-0.0449" fillcolor="#e8f5e9"]
+	n237 -> n238 [label="stand • p=1.0000"]
+	n239 [label="CHANCE
+hit_draw
+EV=-0.5230" fillcolor="#fff3e0"]
+	n237 -> n239 [label="hit_draw • p=1.0000"]
+	n240 [label="DECISION
+hand=['A', '7', '9', 'A']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n239 -> n240 [label="p=0.0769"]
+	n241 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n240 -> n241 [label="stand • p=1.0000"]
+	n242 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n240 -> n242 [label="hit_draw • p=1.0000"]
+	n243 [label="DECISION
+hand=['A', '7', '9', '2']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n239 -> n243 [label="p=0.0769"]
+	n244 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n243 -> n244 [label="stand • p=1.0000"]
+	n245 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n243 -> n245 [label="hit_draw • p=1.0000"]
+	n246 [label="DECISION
+hand=['A', '7', '9', '3']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n239 -> n246 [label="p=0.0769"]
+	n247 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n246 -> n247 [label="stand • p=1.0000"]
+	n248 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n246 -> n248 [label="hit_draw • p=1.0000"]
+	n249 [label="DECISION
+hand=['A', '7', '9', '4']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n239 -> n249 [label="p=0.0769"]
+	n250 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n249 -> n250 [label="stand • p=1.0000"]
+	n251 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n249 -> n251 [label="hit_draw • p=1.0000"]
+	n252 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '9', '5'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n239 -> n252 [label="p=0.0769"]
+	n253 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '9', '6'], 'total': 23, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n239 -> n253 [label="p=0.0769"]
+	n254 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '9', '7'], 'total': 24, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n239 -> n254 [label="p=0.0769"]
+	n255 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '9', '8'], 'total': 25, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n239 -> n255 [label="p=0.0769"]
+	n256 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '9', '9'], 'total': 26, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n239 -> n256 [label="p=0.0769"]
+	n257 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', '9', 'T'], 'total': 27, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n239 -> n257 [label="p=0.3077"]
+	n258 [label="DECISION
+hand=['A', '7', 'T']
+total=18
+dealer=5
+EV*=0.1996" fillcolor="#e3f2fd"]
+	n2 -> n258 [label="p=0.3077"]
+	n259 [label="TERMINAL
+{'action': 'stand', 'total': 18}
+EV=0.1996" fillcolor="#e8f5e9"]
+	n258 -> n259 [label="stand • p=1.0000"]
+	n260 [label="CHANCE
+hit_draw
+EV=-0.6153" fillcolor="#fff3e0"]
+	n258 -> n260 [label="hit_draw • p=1.0000"]
+	n261 [label="DECISION
+hand=['A', '7', 'T', 'A']
+total=19
+dealer=5
+EV*=0.4395" fillcolor="#e3f2fd"]
+	n260 -> n261 [label="p=0.0769"]
+	n262 [label="TERMINAL
+{'action': 'stand', 'total': 19}
+EV=0.4395" fillcolor="#e8f5e9"]
+	n261 -> n262 [label="stand • p=1.0000"]
+	n263 [label="CHANCE
+hit_draw
+EV=-0.7260" fillcolor="#fff3e0"]
+	n261 -> n263 [label="hit_draw • p=1.0000"]
+	n264 [label="DECISION
+hand=['A', '7', 'T', '2']
+total=20
+dealer=5
+EV*=0.6704" fillcolor="#e3f2fd"]
+	n260 -> n264 [label="p=0.0769"]
+	n265 [label="TERMINAL
+{'action': 'stand', 'total': 20}
+EV=0.6704" fillcolor="#e8f5e9"]
+	n264 -> n265 [label="stand • p=1.0000"]
+	n266 [label="CHANCE
+hit_draw
+EV=-0.8545" fillcolor="#fff3e0"]
+	n264 -> n266 [label="hit_draw • p=1.0000"]
+	n267 [label="DECISION
+hand=['A', '7', 'T', '3']
+total=21
+dealer=5
+EV*=0.8918" fillcolor="#e3f2fd"]
+	n260 -> n267 [label="p=0.0769"]
+	n268 [label="TERMINAL
+{'action': 'stand', 'total': 21}
+EV=0.8918" fillcolor="#e8f5e9"]
+	n267 -> n268 [label="stand • p=1.0000"]
+	n269 [label="CHANCE
+hit_draw
+EV=-1.0000" fillcolor="#fff3e0"]
+	n267 -> n269 [label="hit_draw • p=1.0000"]
+	n270 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', '4'], 'total': 22, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n270 [label="p=0.0769"]
+	n271 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', '5'], 'total': 23, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n271 [label="p=0.0769"]
+	n272 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', '6'], 'total': 24, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n272 [label="p=0.0769"]
+	n273 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', '7'], 'total': 25, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n273 [label="p=0.0769"]
+	n274 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', '8'], 'total': 26, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n274 [label="p=0.0769"]
+	n275 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', '9'], 'total': 27, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n275 [label="p=0.0769"]
+	n276 [label="TERMINAL
+{'state': 'player_bust', 'hand': ['A', '7', 'T', 'T'], 'total': 28, 'soft': False}
+EV=-1.0000" fillcolor="#e8f5e9"]
+	n260 -> n276 [label="p=0.3077"]
+	n277 [label="CHANCE
+double_draw
+EV=0.2952" fillcolor="#fff3e0"]
+	n0 -> n277 [label="double_draw • p=1.0000"]
+	n278 [label="TERMINAL
+{'after': 'double', 'card': 'A', 'result_total': 19}
+EV=0.8790" fillcolor="#e8f5e9"]
+	n277 -> n278 [label="p=0.0769"]
+	n279 [label="TERMINAL
+{'after': 'double', 'card': '2', 'result_total': 20}
+EV=1.3407" fillcolor="#e8f5e9"]
+	n277 -> n279 [label="p=0.0769"]
+	n280 [label="TERMINAL
+{'after': 'double', 'card': '3', 'result_total': 21}
+EV=1.7835" fillcolor="#e8f5e9"]
+	n277 -> n280 [label="p=0.0769"]
+	n281 [label="TERMINAL
+{'after': 'double', 'card': '4', 'result_total': 12}
+EV=-0.3344" fillcolor="#e8f5e9"]
+	n277 -> n281 [label="p=0.0769"]
+	n282 [label="TERMINAL
+{'after': 'double', 'card': '5', 'result_total': 13}
+EV=-0.3344" fillcolor="#e8f5e9"]
+	n277 -> n282 [label="p=0.0769"]
+	n283 [label="TERMINAL
+{'after': 'double', 'card': '6', 'result_total': 14}
+EV=-0.3344" fillcolor="#e8f5e9"]
+	n277 -> n283 [label="p=0.0769"]
+	n284 [label="TERMINAL
+{'after': 'double', 'card': '7', 'result_total': 15}
+EV=-0.3344" fillcolor="#e8f5e9"]
+	n277 -> n284 [label="p=0.0769"]
+	n285 [label="TERMINAL
+{'after': 'double', 'card': '8', 'result_total': 16}
+EV=-0.3344" fillcolor="#e8f5e9"]
+	n277 -> n285 [label="p=0.0769"]
+	n286 [label="TERMINAL
+{'after': 'double', 'card': '9', 'result_total': 17}
+EV=-0.0899" fillcolor="#e8f5e9"]
+	n277 -> n286 [label="p=0.0769"]
+	n287 [label="TERMINAL
+{'after': 'double', 'card': 'T', 'result_total': 18}
+EV=0.3991" fillcolor="#e8f5e9"]
+	n277 -> n287 [label="p=0.3077"]
+}
