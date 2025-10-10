@@ -14,6 +14,11 @@ This project was developed on a 2025 M4 MacBook Pro with 24GB of RAM. All usage 
 pip install -r requirements.txt
 ```
 
+- Install Latex utilities, used to generate player reports:
+```bash
+brew install --cask mactex
+```
+
 ## Usage
 
 - Run the Blackjack game simulator with Ollama gpt-oss:20b agents. The following snip will play a game of 20 rounds with 2 players (one aggressive, one conservative), each with a bankroll of \$1000 and a bet size of \$50. The simulation will generate a CSV file containing the complete game history. For more information see src/blackjack_simulator/game.py.

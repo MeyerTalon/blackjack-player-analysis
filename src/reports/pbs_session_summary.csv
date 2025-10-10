@@ -1,4 +1,0 @@
-player_id,rounds,total_wager,total_result,realized_house_edge_pct,expected_house_edge_pbs_pct,expected_house_edge_actual_pct,expected_penalty_addition_pct
-0,20,200.0,-10.0,5.0,0.65,0.6625,0.012499999999999956
-1,20,200.0,-60.0,30.0,0.65,0.65,0.0
-2,20,200.0,-50.0,25.0,0.65,0.7375,0.08750000000000002

@@ -1,1 +1,4 @@
 ollama
+pandas
+numpy
+matplotlib

@@ -1,0 +1,103 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+\title{Blackjack PBS Analysis \& House-Edge Report \\ {\large Player 1}}
+\date{October 10, 2025}
+\begin{document}
+\maketitle
+\section*{Overview}
+\begin{table}[ht]
+\centering
+\caption{Session Summary}
+\label{tab:session_p1}
+\begin{tabular}{l | r | r | r | r | r}
+\hline
+Rounds & Total Wager & Total Result & Realized Edge & Expected (PBS) & Expected (Actual) \\ \hline
+20 & \$200.00 & -60.00 & 30.00\% & 0.65\% & 0.65\% \\
+\hline
+\end{tabular}
+\end{table}
+\begin{table}[ht]
+\centering
+\caption{PBS Compliance / Style}
+\label{tab:style_p1}
+\begin{tabular}{l | r | r | r | r}
+\hline
+Decisions & Total Deviations & Conservative Deviations & Aggressive Deviations & Style \\ \hline
+29 & 9 & 1 & 8 & Aggressive \\
+\hline
+\end{tabular}
+\end{table}
+\section*{Deviations from Perfect Basic Strategy}
+\begin{longtable}{l | r | r | r | r | r | p{5cm}}
+\caption{Player 1 Deviations}\label{tab:devs_p1}\\
+\hline
+Time & Cards & Up & Action & PBS & Penalty & Explanation \\ \hline
+\endfirsthead
+\hline
+Time & Cards & Up & Action & PBS & Penalty & Explanation \\ \hline
+\endhead
+04:37:31 UTC & 8D JH & QH & hit & stand &  & Hard 18 vs dealer QH. Player hit (initial). PBS recommends stand. \\
+04:40:10 UTC & QH 2D KC & 8H & hit & stand &  & Hard 22 vs dealer 8H. Player hit (final). PBS recommends stand. \\
+04:40:10 UTC & QH 2D KC & 8H & hit & stand &  & Hard 22 vs dealer 8H. Player hit (final). PBS recommends stand. \\
+04:40:10 UTC & 5D AD & AH & stand & hit &  & Soft 16 vs dealer AH. Player stand (initial). PBS recommends hit. \\
+04:40:10 UTC & 5D AD & AH & stand & hit &  & Soft 16 vs dealer AH. Player stand (initial). PBS recommends hit. \\
+04:41:17 UTC & 8S 6D AC 2S 7S & 10D & hit & stand &  & Hard 24 vs dealer 10D. Player hit (final). PBS recommends stand. \\
+04:43:14 UTC & 10D 2S & 3D & double & hit &  & Hard 12 vs dealer 3D. Player double (initial). PBS recommends hit. \\
+04:47:08 UTC & QC JH & 3C & double & stand &  & Pair of Ts vs dealer 3C. Player double (initial). PBS recommends stand. \\
+04:49:05 UTC & 2D 6H 9S 5H & KC & hit & stand &  & Hard 22 vs dealer KC. Player hit (final). PBS recommends stand. \\
+04:50:39 UTC & 9H 6S & 3C & hit & stand &  & Hard 15 vs dealer 3C. Player hit (initial). PBS recommends stand. \\
+04:52:17 UTC & 7H 2C & 2S & double & hit &  & Hard 9 vs dealer 2S. Player double (initial). PBS recommends hit. \\
+\hline
+\end{longtable}
+\section*{Complete Betting History}
+\begin{longtable}{l | r | r | r | r | r}
+\caption{Player 1 Betting History}\label{tab:history_p1}\\
+\hline
+Time & Bet & Result & Realized Edge & Expected (PBS) & Expected (Actual) \\ \hline
+\endfirsthead
+\hline
+Time & Bet & Result & Realized Edge & Expected (PBS) & Expected (Actual) \\ \hline
+\endhead
+04:37:31 UTC & \$10.00 & +0.00 & -0.00\% & 0.65\% & 0.65\% \\
+04:38:58 UTC & \$10.00 & +10.00 & -1.00\% & 0.65\% & 0.65\% \\
+04:40:10 UTC & \$10.00 & -10.00 & 1.00\% & 0.65\% & 0.65\% \\
+04:40:10 UTC & \$10.00 & -10.00 & 1.00\% & 0.65\% & 0.65\% \\
+04:41:17 UTC & \$10.00 & -10.00 & 1.00\% & 0.65\% & 0.65\% \\
+04:41:45 UTC & \$10.00 & -20.00 & 2.00\% & 0.65\% & 0.65\% \\
+04:42:35 UTC & \$10.00 & -10.00 & 1.00\% & 0.65\% & 0.65\% \\
+04:43:14 UTC & \$10.00 & +20.00 & -2.00\% & 0.65\% & 0.65\% \\
+04:45:54 UTC & \$10.00 & +10.00 & -1.00\% & 0.65\% & 0.65\% \\
+04:46:19 UTC & \$10.00 & -20.00 & 2.00\% & 0.65\% & 0.65\% \\
+04:47:08 UTC & \$10.00 & -20.00 & 2.00\% & 0.65\% & 0.65\% \\
+04:47:32 UTC & \$10.00 & +0.00 & -0.00\% & 0.65\% & 0.65\% \\
+04:49:05 UTC & \$10.00 & -10.00 & 1.00\% & 0.65\% & 0.65\% \\
+04:49:19 UTC & \$10.00 & +15.00 & -1.50\% & 0.65\% & 0.65\% \\
+04:50:39 UTC & \$10.00 & +10.00 & -1.00\% & 0.65\% & 0.65\% \\
+04:51:08 UTC & \$10.00 & -20.00 & 2.00\% & 0.65\% & 0.65\% \\
+04:51:08 UTC & \$10.00 & +0.00 & -0.00\% & 0.65\% & 0.65\% \\
+04:52:17 UTC & \$10.00 & -30.00 & 3.00\% & 0.65\% & 0.65\% \\
+04:53:06 UTC & \$10.00 & +15.00 & -1.50\% & 0.65\% & 0.65\% \\
+04:53:53 UTC & \$10.00 & +20.00 & -2.00\% & 0.65\% & 0.65\% \\
+\hline
+\end{longtable}
+
+\section*{Notes}
+\begin{itemize}
+  \item \textbf{Expected (PBS)} is the table’s baseline house edge under perfect basic strategy for the given rules.
+  \item \textbf{Expected (Actual)} adds estimated penalties for each deviation from PBS.
+  \item \textbf{Realized edge} is computed from outcomes in the CSV and can differ from expectation due to variance.
+  \item \textbf{Penalty} refers to the amount of EV the player lost by deviating from PBS. This is equivalent to the increase in house edge.
+  \item Penalties are approximate and expressed as percentage of the base bet per round; they are meant for directional analysis.
+\end{itemize}
+
+\end{document}
