@@ -1,0 +1,77 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+\title{Blackjack PBS Analysis \& House-Edge Report \\ {\large Player 0}}
+\date{October 10, 2025}
+\begin{document}
+\maketitle
+\section*{Executive Summary}
+Player 0 completed two rounds wagering \$100 and finished even, with a net result of zero dollars. The realized house edge - the casino's advantage based on the actual outcomes - was effectively zero, showing that the player broke even. However, the expected house edge, calculated using the Pure Basic Strategy (PBS) baseline, was 0.65\%, a small advantage for the casino that also holds when the player's actual deviations were factored in; the expected edge stayed at 0.65\% with no additional cost from deviations. The player's style is classified as conservative, meaning they tend to avoid risky moves and stay close to basic strategy guidelines. One deviation noted was standing on a 2-Club and 10-Spade versus an Ace of Spades, a move that differs from PBS but did not change the edge. Another potential habit to monitor could be any future deviations that increase the edge, though none were observed to add value in this session.
+\section*{Overview}
+\begin{table}[ht]
+\centering
+\caption{Session Summary}
+\label{tab:session_p0}
+\begin{tabular}{l | r | r | r | r | r}
+\hline
+Rounds & Total Wager & Total Result & Realized Edge & Expected (PBS) & Expected (Actual) \\ \hline
+2 & \$100.00 & +0.00 & -0.00\% & 0.65\% & 0.65\% \\
+\hline
+\end{tabular}
+\end{table}
+\begin{table}[ht]
+\centering
+\caption{PBS Compliance / Style}
+\label{tab:style_p0}
+\begin{tabular}{l | r | r | r | r}
+\hline
+Decisions & Total Deviations & Conservative Deviations & Aggressive Deviations & Style \\ \hline
+2 & 1 & 1 & 0 & Conservative \\
+\hline
+\end{tabular}
+\end{table}
+\section*{Deviations from Perfect Basic Strategy}
+\begin{longtable}{l | r | r | r | r | r | p{5cm}}
+\caption{Player 0 Deviations}\label{tab:devs_p0}\\
+\hline
+Time & Cards & Up & Action & PBS & Penalty & Explanation \\ \hline
+\endfirsthead
+\hline
+Time & Cards & Up & Action & PBS & Penalty & Explanation \\ \hline
+\endhead
+02:12:04 UTC & 2C 10S & AS & stand & hit & 0.00\% & Hard 12 vs dealer AS. Player stand (initial). PBS recommends hit. \\
+\hline
+\end{longtable}
+\section*{Complete Betting History}
+\begin{longtable}{l | r | r | r | r | r}
+\caption{Player 0 Betting History}\label{tab:history_p0}\\
+\hline
+Time & Bet & Result & Realized Edge & Expected (PBS) & Expected (Actual) \\ \hline
+\endfirsthead
+\hline
+Time & Bet & Result & Realized Edge & Expected (PBS) & Expected (Actual) \\ \hline
+\endhead
+02:12:04 UTC & \$50.00 & -50.00 & 1.00\% & 0.65\% & 0.65\% \\
+02:12:54 UTC & \$50.00 & +50.00 & -1.00\% & 0.65\% & 0.65\% \\
+\hline
+\end{longtable}
+
+\section*{Notes}
+\begin{itemize}
+  \item \textbf{Expected (PBS)} is the table’s baseline house edge under perfect basic strategy for the given rules.
+  \item \textbf{Expected (Actual)} adds estimated penalties for each deviation from PBS.
+  \item \textbf{Realized edge} is computed from outcomes in the CSV and can differ from expectation due to variance.
+  \item \textbf{Penalty} refers to the amount of EV the player lost by deviating from PBS. This is equivalent to the increase in house edge.
+  \item Penalties are approximate and expressed as percentage of the base bet per round; they are meant for directional analysis.
+\end{itemize}
+
+\end{document}

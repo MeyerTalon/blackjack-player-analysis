@@ -1,3 +1,11 @@
+"""
+Graphviz visualization for blackjack decision trees.
+
+This module renders the decision/chance tree produced by `build_tree` into a
+Graphviz diagram (SVG/PNG/PDF). It supports depth/node limits, pruning tiny
+chance branches, and an option to keep only the best-EV path at decisions.
+"""
+
 from graphviz import Digraph
 from itertools import count
 from typing import Dict, Any, Optional
@@ -38,9 +46,11 @@ def visualize_tree(
     nodes_added = 0
 
     def fmt_ev(x: Optional[float]) -> str:
+        """Formats an EV value to four decimals (default 0.0000)."""
         return f"{x:.4f}" if isinstance(x, (int, float)) else "0.0000"
 
     def node_label(n: Dict[str, Any]) -> str:
+        """Builds a multi-line label describing a node."""
         t = n.get("node")
         info = n.get("info", {})
         ev = fmt_ev(n.get("ev"))
@@ -57,12 +67,14 @@ def visualize_tree(
         return f"TERMINAL\n{info}\nEV={ev}"
 
     def node_color(n: Dict[str, Any]) -> str:
+        """Returns a fill color based on node type."""
         t = n.get("node")
         if t == "decision": return "#e3f2fd"  # light blue
         if t == "chance":   return "#fff3e0"  # light orange
         return "#e8f5e9"                 # light green (terminal)
 
-    def best_child(children):
+    def best_child(children) -> str:
+        """Selects the child with the highest EV."""
         # Choose the child with max EV (for chance nodes we already have 'ev')
         best = None
         best_val = float("-inf")
@@ -73,7 +85,25 @@ def visualize_tree(
                 best = c
         return best
 
-    def add_subtree(n: Dict[str, Any], depth: int, parent_id: Optional[str], edge_label: Optional[str]):
+    def add_subtree(
+            n: Dict[str, Any],
+            depth: int,
+            parent_id:
+            Optional[str],
+            edge_label: Optional[str]
+    ) -> Optional[str]:
+        """
+        Recursively adds nodes/edges to the Graphviz graph with pruning.
+
+        Args:
+            n: Current tree node to render.
+            depth: Depth of this node from the root.
+            parent_id: Graphviz node id of the parent, or None for root.
+            edge_label: Optional edge label (e.g., action or probability).
+
+        Returns:
+            Optional[str]: The Graphviz node id created for `n`, or None if pruned.
+        """
         nonlocal nodes_added
         if nodes_added >= max_nodes:
             return None
@@ -125,8 +155,19 @@ def visualize_tree(
 
 def _parse_hand(s: str) -> List[str]:
     """
-    Parse a hand like '9H,7D' or '9h 7d' into ['9H','7D'].
-    Accepts ranks 2..10, J,Q,K,A; suits H,D,C,S.
+    Parses a string like '9H,7D' or '9h 7d' into ['9H','7D'].
+
+    Accepts ranks {2..10, J, Q, K, A} and suits {H, D, C, S}. Also normalizes
+    'TH' to '10H'.
+
+    Args:
+        s: Input card list string.
+
+    Returns:
+        List[str]: Normalized card strings.
+
+    Raises:
+        argparse.ArgumentTypeError: If any card has an invalid rank or suit.
     """
     toks = [t.strip().upper() for t in s.replace(" ", ",").split(",") if t.strip()]
     norm = []

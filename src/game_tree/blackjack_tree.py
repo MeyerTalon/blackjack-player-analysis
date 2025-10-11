@@ -1,4 +1,13 @@
-# blackjack_tree.py
+"""Game-tree construction and EV analysis for blackjack (infinite-deck model).
+
+This module builds a recursive decision/chance tree for a player hand versus a
+dealer upcard under configurable rules. It provides:
+- `Rules`: table parameters (H17/S17, DAS, surrender, blackjack payout, resplits)
+- Rank/hand utilities and dealer-final distribution under an infinite deck
+- EV calculators (stand/double) and a full tree builder (`build_tree`)
+- Simple viewers (`print_tree`, `tree_to_json`) for inspection/debugging
+"""
+
 import json
 from dataclasses import dataclass
 from typing import List, Dict, Tuple, Optional, Any
@@ -8,6 +17,16 @@ from typing import List, Dict, Tuple, Optional, Any
 # -----------------------------
 @dataclass(frozen=True)
 class Rules:
+    """
+    Blackjack table parameters used by the tree/EV calculations.
+
+    Attributes:
+        h17: If True, dealer hits soft 17 (H17); otherwise stands (S17).
+        das: If True, doubling after splits is allowed.
+        surrender: Whether surrender is considered in EV calculations.
+        blackjack_pays: Blackjack payout ratio (num, den), e.g., (3, 2) for 3:2.
+        max_resplits: Maximum number of resplits permitted (3 ⇒ up to 4 hands).
+    """
     h17: bool = True                 # Dealer hits soft 17 (H17). If False, stands on soft 17 (S17)
     das: bool = True                 # Double after split allowed
     surrender: bool = True           # Used in EV here
@@ -24,7 +43,17 @@ RANK_PROB = {
 }
 
 def rank_of_card(card: str) -> str:
-    """Normalize a card like '10H','QS','7D','AC' to ranks A,2..9,T"""
+    """
+    Normalizes a card string to a rank in {A,2..9,T}.
+
+    Accepts inputs like '10H', 'QS', '7D', 'AC', or just '10', 'Q', '7', 'A'.
+
+    Args:
+        card: A rank or rank+suited card string (case-insensitive).
+
+    Returns:
+        str: One of 'A','2',...,'9','T'.
+    """
     s = card.upper()
     r = s[:-1] if len(s) > 1 and s[-1].isalpha() else s
     r = r.replace("10","T")
@@ -32,6 +61,7 @@ def rank_of_card(card: str) -> str:
     return r
 
 def card_value_rank(r: str) -> int:
+    """Maps a normalized rank to its blackjack value (A=11, T=10, else numeric)."""
     if r == "A": return 11
     if r == "T": return 10
     return int(r)
@@ -40,7 +70,18 @@ def card_value_rank(r: str) -> int:
 # Hand totals / state helpers (player)
 # ---------------------------------------
 def hand_totals_from_ranks(ranks: List[str]) -> Tuple[int, bool]:
-    """Return best total (<=21 if possible) and soft flag."""
+    """
+    Computes best total and softness for a hand described by ranks.
+
+    The algorithm starts with all Aces as 11 and demotes as needed to avoid busts.
+
+    Args:
+        ranks: List of normalized ranks (A,2..9,T).
+
+    Returns:
+        Tuple[int, bool]: (best_total, is_soft) where is_soft indicates whether an
+        Ace is counted as 11 in the best total without busting.
+    """
     total = 0
     aces = 0
     for r in ranks:
@@ -60,11 +101,13 @@ def hand_totals_from_ranks(ranks: List[str]) -> Tuple[int, bool]:
     return total, soft
 
 def is_blackjack(ranks: List[str]) -> bool:
+    """True if exactly two cards total 21 (natural blackjack)."""
     if len(ranks) != 2: return False
     total, _ = hand_totals_from_ranks(ranks)
     return total == 21
 
 def is_pair(ranks: List[str]) -> bool:
+    """True if the two-card hand consists of equal ranks (e.g., '8','8')."""
     return len(ranks) == 2 and ranks[0] == ranks[1]
 
 # ---------------------------------------
@@ -77,7 +120,17 @@ def is_pair(ranks: List[str]) -> bool:
 from functools import lru_cache
 
 def _dealer_step_dist(total: int, soft: bool, rules: Rules) -> Dict[Any, float]:
-    """Recursively compute distribution from current dealer state (total/soft)."""
+    """
+    Recursively computes dealer outcome distribution from (total, soft) state.
+
+    Args:
+        total: Current dealer total.
+        soft: Whether the total is soft (some Ace counted as 11).
+        rules: Dealer hit/stand configuration.
+
+    Returns:
+        Dict[Any, float]: Distribution over {17,18,19,20,21,'bust'} from this state.
+    """
     # Terminal tests:
     if total > 21:
         return {"bust": 1.0}
@@ -112,7 +165,16 @@ def _dealer_step_dist(total: int, soft: bool, rules: Rules) -> Dict[Any, float]:
 
 @lru_cache(None)
 def dealer_distribution(up_rank: str, rules: Rules) -> Dict[Any, float]:
-    """Dealer final distribution given an upcard rank (infinite deck)."""
+    """
+    Computes dealer final distribution given an upcard (infinite deck).
+
+    Args:
+        up_rank: Dealer upcard rank normalized to {A,2..9,T}.
+        rules: Dealer hit/stand configuration.
+
+    Returns:
+        Dict[Any, float]: Probability distribution over {17,18,19,20,21,'bust'}.
+    """
     # Start by drawing the hole card, then resolve.
     out: Dict[Any,float] = {}
     up_val = 11 if up_rank == "A" else (10 if up_rank == "T" else int(up_rank))
@@ -138,7 +200,16 @@ def dealer_distribution(up_rank: str, rules: Rules) -> Dict[Any, float]:
 # EV vs dealer (player stands/bust/double)
 # ---------------------------------------
 def ev_vs_dealer(player_total: int, dealer_dist: Dict[Any,float]) -> float:
-    """EV (per 1 unit stake) when player stands on a given total."""
+    """
+    Expected value (per 1 unit stake) if the player stands on `player_total`.
+
+    Args:
+        player_total: Player’s standing total (hard or soft, already evaluated).
+        dealer_dist: Dealer terminal distribution.
+
+    Returns:
+        float: EV in units of the original wager (win=+1, loss=-1, push=0).
+    """
     ev = 0.0
     for k, p in dealer_dist.items():
         if k == "bust":
@@ -171,13 +242,24 @@ def ev_vs_dealer(player_total: int, dealer_dist: Dict[Any,float]) -> float:
 
 @dataclass
 class BuildState:
+    """
+    Internal builder state carried during expansion.
+
+    Attributes:
+        rules: Table rules in effect.
+        dealer_up: Dealer upcard rank (A,2..9,T).
+        allow_split: Whether a split is legal at the current node.
+        split_depth: Number of splits already performed.
+        origin_is_split: True if this hand originated from a split.
+    """
     rules: Rules
     dealer_up: str                 # rank "A","2"..,"9","T"
     allow_split: bool              # can split this two-card pair now
     split_depth: int               # how many splits taken so far
     origin_is_split: bool          # current hand originates from a split (affects e.g., blackjack counting)
 
-def _terminal_node(ev: float, info: Dict[str,Any], prob: Optional[float]) -> Dict[str,Any]:
+def _terminal_node(ev: float, info: Dict[str,Any], prob: Optional[float]) -> Dict[str, Any]:
+    """Creates a terminal node dictionary."""
     return {
         "node": "terminal",
         "info": info,
@@ -186,7 +268,8 @@ def _terminal_node(ev: float, info: Dict[str,Any], prob: Optional[float]) -> Dic
         "children": []
     }
 
-def _decision_node(info: Dict[str,Any], prob: Optional[float]) -> Dict[str,Any]:
+def _decision_node(info: Dict[str,Any], prob: Optional[float]) -> Dict[str, Any]:
+    """Creates a decision node dictionary with no children yet."""
     return {
         "node": "decision",
         "info": info,
@@ -195,7 +278,8 @@ def _decision_node(info: Dict[str,Any], prob: Optional[float]) -> Dict[str,Any]:
         "children": []
     }
 
-def _chance_node(info: Dict[str,Any], prob: Optional[float]) -> Dict[str,Any]:
+def _chance_node(info: Dict[str,Any], prob: Optional[float]) -> Dict[str, Any]:
+    """Creates a chance node dictionary with no children yet."""
     return {
         "node": "chance",
         "info": info,
@@ -205,6 +289,18 @@ def _chance_node(info: Dict[str,Any], prob: Optional[float]) -> Dict[str,Any]:
     }
 
 def available_actions(player_ranks: List[str], st: BuildState) -> List[str]:
+    """
+    Returns legal actions for the current player hand and state.
+
+    Actions considered: stand, hit, double (two-card only; DAS constrained), split (pair and resplit limits).
+
+    Args:
+        player_ranks: Player hand ranks (normalized).
+        st: Current build state.
+
+    Returns:
+        List[str]: Subset of ["stand","hit","double","split"].
+    """
     total, soft = hand_totals_from_ranks(player_ranks)
     acts = []
     # Stand always legal
@@ -220,7 +316,20 @@ def available_actions(player_ranks: List[str], st: BuildState) -> List[str]:
     return acts
 
 def compute_blackjack_ev_if_applicable(player_ranks: List[str], st: BuildState, dealer_dist: Dict[Any,float]) -> Optional[float]:
-    """If initial 2-card natural, return EV (3:2) except if from split (no natural). Else None."""
+    """
+    Returns EV for a natural blackjack (if applicable), else None.
+
+    Natural blackjacks from split hands are not counted as blackjack here.
+
+    Args:
+        player_ranks: Player ranks (two-card start).
+        st: Current build state.
+        dealer_dist: Dealer terminal distribution.
+
+    Returns:
+        Optional[float]: EV for a natural blackjack (push vs dealer 21, win at payout),
+        or None if not applicable.
+    """
     if len(player_ranks) == 2 and is_blackjack(player_ranks) and not st.origin_is_split:
         # Natural BJ pushes against dealer BJ if that occurs in dist.
         # In our dealer dist we include outcomes after drawing hole card; includes 21 totals,
@@ -233,15 +342,23 @@ def compute_blackjack_ev_if_applicable(player_ranks: List[str], st: BuildState, 
         return win_prob * pay  # pushes pay 0
     return None
 
-def build_tree(player_cards: List[str],
-               dealer_upcard: str,
-               rules: Optional[Rules] = None,
-               previous_actions: Optional[List[str]] = None) -> Dict[str,Any]:
+def build_tree(
+        player_cards: List[str],
+        dealer_upcard: str,
+        rules: Optional[Rules] = None,
+        previous_actions: Optional[List[str]] = None
+) -> Dict[str,Any]:
     """
-    Build game tree from current state.
-    - player_cards: e.g. ["9H","7D"] or ranks ["9","7"] also accepted.
-    - dealer_upcard: e.g. "6S" or "6" or "T" (we only use rank).
-    - previous_actions: optional list like ["split"] (informative only in this minimal API).
+    Builds a decision/chance tree for the given player hand vs dealer upcard.
+
+    Args:
+        player_cards: Player cards (e.g., ["9H","7D"]; ranks-only also supported).
+        dealer_upcard: Dealer upcard (suit optional).
+        rules: Optional table rules; defaults to `Rules()`.
+        previous_actions: Informational only in this minimal API.
+
+    Returns:
+        Dict[str, Any]: Root node of the constructed game tree.
     """
     rules = rules or Rules()
     pranks = [rank_of_card(c) for c in player_cards]
@@ -257,7 +374,25 @@ def build_tree(player_cards: List[str],
     root = _expand_decision(pranks, st, prob=None)
     return root
 
-def _expand_decision(pranks: List[str], st: BuildState, prob: Optional[float]) -> Dict[str,Any]:
+def _expand_decision(
+        pranks: List[str],
+        st: BuildState,
+        prob: Optional[float]
+) -> Dict[str,Any]:
+    """
+    Expands a decision node for the current player ranks and state.
+
+    This function handles terminal checks (bust, blackjack), enumerates legal
+    actions, and recursively builds chance/terminal children, computing EVs.
+
+    Args:
+        pranks: Player hand ranks (normalized).
+        st: Current build state.
+        prob: Probability of reaching this node from the parent (None at root).
+
+    Returns:
+        Dict[str, Any]: Decision/chance/terminal node with EV and children.
+    """
     total, soft = hand_totals_from_ranks(pranks)
     dealer_dist = dealer_distribution(st.dealer_up, st.rules)
 
@@ -355,6 +490,15 @@ def _expand_decision(pranks: List[str], st: BuildState, prob: Optional[float]) -
 # Tree viewers / JSON
 # ---------------------------------------
 def tree_to_json(tree: Dict[str,Any]) -> str:
+    """
+    Serializes a tree to pretty-printed JSON.
+
+    Args:
+        tree: Root node of the decision/chance tree.
+
+    Returns:
+        str: JSON string with indentation.
+    """
     def clean(obj):
         if isinstance(obj, dict):
             return {k: clean(v) for k, v in obj.items()}
@@ -363,7 +507,21 @@ def tree_to_json(tree: Dict[str,Any]) -> str:
         return obj
     return json.dumps(clean(tree), indent=2)
 
-def print_tree(node: Dict[str,Any], indent: str = "", prob_path: float = 1.0, show_probs=True):
+def print_tree(
+        node: Dict[str, Any],
+        indent: str = "",
+        prob_path: float = 1.0,
+        show_probs=True
+) -> None:
+    """
+    Pretty-prints the decision/chance/terminal tree to stdout.
+
+    Args:
+        node: Current node to print.
+        indent: Indentation prefix for nested nodes.
+        prob_path: Path probability multiplier used for display.
+        show_probs: If True, prints branch probabilities at terminals.
+    """
     ntype = node["node"]
     ev = node.get("ev", 0.0)
     pstr = f" p={prob_path:.6f}" if show_probs and node.get("prob") is not None else ""
@@ -397,4 +555,4 @@ if __name__ == "__main__":
     print_tree(tree, show_probs=False)
 
     # JSON output (write if you want)
-    # print(tree_to_json(tree))
+    print(tree_to_json(tree))
