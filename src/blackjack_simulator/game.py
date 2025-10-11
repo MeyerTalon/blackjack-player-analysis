@@ -1,3 +1,17 @@
+"""
+Comprehensive blackjack simulation with support for LLM-controlled players.
+
+This module implements:
+- Configurable rules (`BlackjackRules`) and a multi-deck shoe (`Shoe`).
+- Player hand mechanics (`Hand`) and dealer play logic.
+- A lightweight view (`HandView`) for feeding decisions to policies/LLMs.
+- Single-round (`play_round`) and multi-round (`play_many`) game loops.
+- CLI entry point (`main`) to run simulations and log results to CSV.
+
+It integrates with local Ollama models via `LLMBlackjackPlayer` and supports
+baseline random play via `RandomPlayer`.
+"""
+
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Literal, Dict
@@ -17,6 +31,18 @@ Action = Literal["hit", "stand", "double", "split", "surrender"]
 
 @dataclass(frozen=True)
 class BlackjackRules:
+    """
+    Table configuration used by the simulator and policy logic.
+
+    Attributes:
+        decks: Number of standard 52-card decks in the shoe.
+        dealer_hits_soft_17: If True, dealer hits on soft 17 (H17); otherwise stands (S17).
+        double_after_split: If True, allowing doubling after splits (DAS).
+        surrender_allowed: If True, late surrender is available on the first decision.
+        blackjack_pays_ratio: Payout ratio for a natural blackjack (numerator, denominator).
+        resplit_limit: Maximum number of resplits allowed (e.g., 3 => up to 4 hands).
+        resplit_aces_allowed: If True, aces may be resplit; otherwise restricted.
+    """
     decks: int = 6
     dealer_hits_soft_17: bool = True  # H17=True, S17=False
     double_after_split: bool = True
@@ -29,9 +55,34 @@ RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 SUITS = ["S", "H", "D", "C"]
 
 def make_deck() -> List[str]:
+    """
+    Builds a single 52-card deck as rank-suit strings (e.g., 'AS', '10D').
+
+    Returns:
+        the deck list.
+    """
     return [f"{r}{s}" for r in RANKS for s in SUITS]
 
 class Shoe:
+    """
+    Multi-deck shoe with cut-card penetration and shuffle management.
+
+    Cards are stored as rank-suit strings. The shoe tracks a cut index to signal
+    when a reshuffle is needed based on the `penetration` fraction.
+
+    Args:
+        decks: Number of decks to include in the shoe.
+        penetration: Fraction of shoe consumed before triggering reshuffle.
+        rng: Optional random number generator for deterministic tests.
+
+    Attributes:
+        decks: Number of decks.
+        penetration: Cut-card fraction.
+        cards: Current stack of cards (top at the end).
+        dealt: Number of cards dealt since the last shuffle.
+        cut_index: Index after which `need_shuffle` becomes True.
+        need_shuffle: Flag set when penetration reached.
+    """
     def __init__(self, decks: int = 6, penetration: float = 0.75, rng: Optional[random.Random] = None):
         assert decks >= 1 and 0.0 < penetration < 1.0
         self.decks = decks
@@ -45,15 +96,29 @@ class Shoe:
         self.need_shuffle = False
 
     def shuffle(self) -> None:
+        """Resets and shuffles the shoe; clears dealt count and `need_shuffle`."""
         self._cards_init = make_deck() * self.decks
         self.cards = list(self._cards_init)
         self.rng.shuffle(self.cards)
         self.dealt = 0
 
     def deck_size(self) -> int:
+        """Returns the number of cards currently remaining in the shoe."""
         return len(self.cards)
 
     def draw(self, n: int = 1) -> List[str]:
+        """
+        Draws `n` cards from the top of the shoe. Sets need_shuffle as necessary.
+
+        Args:
+            n: Number of cards to draw.
+
+        Returns:
+            List[str]: Drawn cards (rank-suit strings).
+
+        Raises:
+            IndexError: If attempting to draw more cards than remain.
+        """
         if n > self.deck_size():
             raise IndexError(f'Trying to draw {n} cards from deck of size {self.deck_size()}.')
         out = []
@@ -69,6 +134,7 @@ class Shoe:
 # ---------------------------------------------------------------------------
 
 def card_value(rank: str) -> int:
+    """Maps a rank to its blackjack value (A=11, 10/J/Q/K=10, else numeric)."""
     if rank in ("J", "Q", "K", "10"):
         return 10
     if rank == "A":
@@ -76,11 +142,24 @@ def card_value(rank: str) -> int:
     return int(rank)
 
 def split_rank(card: str) -> str:
+    """Returns the rank portion of a card string (everything but the final suit)."""
     # rank is everything except last char (suit)
     return card[:-1]
 
 @dataclass
 class Hand:
+    """
+    Mutable representation of a player's (or dealer's) hand and flags.
+
+    Attributes:
+        cards: List of card strings.
+        wager: Current wager attached to this hand.
+        is_finished: Whether this hand is done acting.
+        is_doubled: Whether the hand has doubled down.
+        is_surrendered: Whether the hand was surrendered.
+        is_split_aces: Whether this hand resulted from splitting aces.
+        originated_from_split: Whether the hand is from any split (aces or not).
+    """
     cards: List[str]
     wager: float
     is_finished: bool = False
@@ -90,13 +169,22 @@ class Hand:
     originated_from_split: bool = False
 
     def add(self, card: str) -> None:
+        """Adds a card to the hand."""
         self.cards.append(card)
 
     def ranks(self) -> List[str]:
+        """Returns the rank strings of all cards in the hand."""
         return [split_rank(c) for c in self.cards]
 
     def totals(self) -> Tuple[int, Optional[int]]:
-        """Return (hard_total, soft_total_or_None). soft_total counts one Ace as 11 if it doesn't bust."""
+        """
+        Computes (hard_total, soft_total_or_None).
+
+        The soft total counts a single Ace as 11 when it does not cause a bust.
+
+        Returns:
+            Tuple[int, Optional[int]]: Hard total and optional soft total.
+        """
         hard = sum(card_value(r) if r != "A" else 1 for r in self.ranks())
         aces = sum(1 for r in self.ranks() if r == "A")
         soft = None
@@ -107,23 +195,29 @@ class Hand:
         return hard if soft is None else soft - 10, soft
 
     def best_total(self) -> int:
+        """Returns the highest non-busting total (soft if valid, else hard)."""
         hard, soft = self.totals()
         return soft if soft is not None and soft <= 21 else hard
 
     def is_soft(self) -> bool:
+        """True if the hand has a valid soft total (<= 21)."""
         _, soft = self.totals()
         return soft is not None and soft <= 21
 
     def is_blackjack(self) -> bool:
+        """True if the hand is a natural blackjack (two cards totaling 21)."""
         return len(self.cards) == 2 and self.best_total() == 21
 
     def is_busted(self) -> bool:
+        """True if the best total exceeds 21."""
         return self.best_total() > 21
 
     def is_pair(self) -> bool:
+        """True if the hand has exactly two cards of the same rank."""
         return len(self.cards) == 2 and split_rank(self.cards[0]) == split_rank(self.cards[1])
 
     def can_split(self, rules: BlackjackRules, splits_done: int) -> bool:
+        """Whether the hand can be split under the given rules and split count."""
         if not self.is_pair():
             return False
         if splits_done >= rules.resplit_limit:
@@ -137,7 +231,17 @@ class Hand:
 # Dealer logic
 # ---------------------------------------------------------------------------
 
-def dealer_initial_play(shoe: Shoe):
+def dealer_initial_play(shoe: Shoe) -> Tuple[Tuple, bool]:
+    """
+    Deals dealer upcard/hole and peeks for blackjack when applicable.
+
+    Args:
+        shoe: Shared shoe to draw from.
+
+    Returns:
+        ((upcard, holecard), dealer_has_blackjack): Tuple of dealer cards plus
+        a flag indicating whether peek detected a natural blackjack.
+    """
     dealer_up = shoe.draw(1)[0]
     dealer_hole = shoe.draw(1)[0]
     dealer_has_blackjack = False
@@ -149,6 +253,18 @@ def dealer_initial_play(shoe: Shoe):
     return (dealer_up, dealer_hole), dealer_has_blackjack
 
 def dealer_play(rules: BlackjackRules, shoe: Shoe, upcard: str, hole: str) -> Hand:
+    """
+    Plays out the dealer hand according to H17/S17 rules.
+
+    Args:
+        rules: Dealer standing/hitting configuration.
+        shoe: Shared shoe.
+        upcard: Dealer's visible card.
+        hole: Dealer's face-down card.
+
+    Returns:
+        Hand: Final dealer hand after drawing per rules.
+    """
     dealer = Hand(cards=[upcard, hole], wager=0.0)
     # Dealer blackjack check handled by caller.
     while True:
@@ -171,6 +287,18 @@ def dealer_play(rules: BlackjackRules, shoe: Shoe, upcard: str, hole: str) -> Ha
 
 @dataclass(frozen=True)
 class HandView:
+    """
+    LLM-friendly snapshot of a player's hand and available options.
+
+    Attributes:
+        cards: Card strings in the hand.
+        hard_total: Hard total value.
+        soft_total: Soft total value if valid, else None.
+        is_pair: Whether the first two cards form a pair.
+        can_split: Whether splitting is allowed now.
+        can_double: Whether doubling is allowed now.
+        can_surrender: Whether surrender is allowed on this decision.
+    """
     cards: List[str]
     hard_total: int
     soft_total: Optional[int]
@@ -180,11 +308,19 @@ class HandView:
     can_surrender: bool
 
     def short_text(self) -> str:
+        """Compact textual description intended for prompts/logging."""
         def soft_tag():
             return f" (soft={self.soft_total})" if self.soft_total is not None else ""
         return f"cards={self.cards}, hard={self.hard_total}{soft_tag()}, pair={self.is_pair}"
 
-def build_hand_view(h: Hand, rules: BlackjackRules, dealer_up: str, splits_done: int, first_decision: bool) -> HandView:
+def build_hand_view(
+        h: Hand,
+        rules: BlackjackRules,
+        dealer_up: str,
+        splits_done: int,
+        first_decision: bool
+) -> HandView:
+    """Builds a `HandView` for the given `Hand` under current table context."""
     hard, soft = h.totals()
     return HandView(
         cards=list(h.cards),
@@ -209,25 +345,26 @@ def play_round(
         client: ollama.Client,
 ) -> Tuple[List[float], Dict]:
     """
-    Plays one complete round of blackjack with multiple players seated at the same table.
+    Plays one complete round with multiple seated players.
+
+    Deals initial cards, handles player turns (including splits/doubles/surrender),
+    plays the dealer, and settles wagers. Bankroll debits for wagers occur as
+    actions (splits/doubles) are taken.
 
     Args:
         rules: Table rules.
         shoe: Shared shoe for the table.
-        bankrolls: Per-player bankrolls (len == len(players)).
-        base_bets: Per-player base wagers for this round (len == len(players)).
-        players: List of LLM-backed players. Each must expose:
-                 .decide(rules, player_view, dealer_upcard, legal_actions, client) -> Action
-        client: Ollama client passed to each player's decide call.
+        bankrolls: Per-player bankrolls (modified in-place).
+        base_bets: Per-player base wagers for this round.
+        players: Decision-making players exposing `.decide(...) -> Action`.
+        client: Ollama client for LLM-driven players.
 
     Returns:
-        updated_bankrolls, stats
+        Tuple[List[float], Dict]: Updated bankrolls and a statistics dict suitable
+        for logging/analysis.
 
-    Notes:
-        - Each player is treated independently for wagering/settlement.
-        - Dealer is shared (one upcard + hole), as in a normal table.
-        - Supports splits, DAS, surrender, split aces restrictions, and blackjack payouts per `rules`.
-        - A natural blackjack for a hand originating from a split aces is NOT treated as blackjack.
+    Raises:
+        RuntimeError: If any player returns an illegal action.
     """
     n = len(players)
     assert len(bankrolls) == n and len(base_bets) == n, "bankrolls/base_bets must match players length"
@@ -426,6 +563,20 @@ def play_many(
         rules: Optional[BlackjackRules] = None,
         players: List[LLMBlackjackPlayer] = None,
 ) -> None:
+    """
+    Runs multiple rounds, logs each to CSV, and prints bankrolls.
+
+    Args:
+        n_rounds: Number of rounds to simulate.
+        n_players: Number of seats at the table.
+        starting_bankroll: Initial bankroll per player.
+        base_bets: Base bet per player each round (len == n_players).
+        rules: Optional table rules (defaults provided).
+        players: Optional preconstructed player list; defaults to `RandomPlayer`s.
+
+    Returns:
+        None
+    """
     dt_str = datetime.now().strftime("%m-%d-%Y:%H:%M:%S")
     rules = rules or BlackjackRules()
     shoe = Shoe(

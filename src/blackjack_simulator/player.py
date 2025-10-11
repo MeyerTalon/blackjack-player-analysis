@@ -1,3 +1,12 @@
+"""
+Defines blackjack rule dataclasses, personas, and player logic.
+
+Includes lightweight data models for hands and rules, prompt construction for
+LLM decisions, and two player implementations: a random baseline and an
+Ollama-backed LLM player.
+"""
+
+
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Literal, Optional, Tuple
@@ -5,10 +14,6 @@ import asyncio
 import time
 import re
 import random
-
-# If you installed `ollama` >= 0.3.x:
-#   pip install ollama
-# The user previously used these classes, so we keep them.
 from ollama import Client, AsyncClient
 
 Action = Literal["hit", "stand", "double", "split", "surrender"]
@@ -80,9 +85,20 @@ def build_decision_prompt(
     dealer_upcard: str,
     legal_actions: Iterable[Action],
 ) -> str:
-    """
-    Compose a single-turn, instruction-complete prompt for .generate().
-    We add a structured 'Game Context' block followed by a terse 'Respond with' line.
+    """Builds a single-turn blackjack decision prompt for LLM generation.
+
+    The prompt includes the system persona, table rules, current hand state,
+    and an explicit response instruction to ensure consistent, parseable outputs.
+
+    Args:
+        persona_name (str): Name of the player persona used to select the system preamble.
+        rules (BlackjackRules): Configuration of blackjack table rules.
+        player_hand (HandView): Current view of the player's cards and state.
+        dealer_upcard (str): Dealer's visible card (e.g., "7C").
+        legal_actions (Iterable[Action]): Valid actions available to the player at this turn.
+
+    Returns:
+        str: A fully composed prompt string ready for model generation.
     """
     system_preamble = PERSONAS[persona_name].strip()
 
@@ -117,7 +133,17 @@ def build_decision_prompt(
 # ------------------------------
 
 class RandomPlayer:
-    def __init__(self, rng: Optional[random.Random] = None):
+    """
+    A blackjack player that selects actions uniformly at random.
+    """
+    def __init__(self, rng: Optional[random.Random] = None) -> None:
+        """
+        Initializes the RandomPlayer with an optional random number generator.
+
+        Args:
+            rng (Optional[random.Random]): Optional random number generator.
+                If not provided, a new instance of `random.Random` is created.
+        """
         self.rng = rng or random.Random()
 
     def decide(
@@ -127,6 +153,15 @@ class RandomPlayer:
             dealer_upcard: str,
             legal_actions: Iterable[Action],
             client: Client) -> Action:
+        """
+        Selects a random legal action from the available options.
+
+        Args:
+            legal_actions (Iterable[Action]): The set of valid actions at this turn.
+            all other args added for easy integration with LLMBlackjackPlayer class.
+        Returns:
+            Action: A randomly chosen legal action.
+        """
         legal = list(legal_actions)
         return self.rng.choice(legal)
 
@@ -152,6 +187,17 @@ class LLMBlackjackPlayer:
         max_retries: int = 2,
         timeout: Optional[float] = None,
     ) -> None:
+        """
+        Initializes the LLM-backed blackjack player.
+
+        Args:
+            persona (Literal["aggressive", "conservative", "basic", "random"]):
+                Personality determining the style of play. Defaults to "basic".
+            model (str): Name of the local Ollama model to use. Defaults to "gpt-oss:20b".
+            temperature (float): Sampling temperature for output randomness. Defaults to 0.2.
+            max_retries (int): Number of retries allowed on model call failure. Defaults to 2.
+            timeout (Optional[float]): Optional timeout for model requests (not always supported).
+        """
         self.persona = persona
         self.model = model
         self.temperature = temperature
@@ -171,7 +217,17 @@ class LLMBlackjackPlayer:
             client: Client
     ) -> Action:
         """
-        Synchronous version. Returns one of the legal actions.
+        Determines the next blackjack action synchronously using the LLM.
+
+        Args:
+            rules (BlackjackRules): Configuration of the blackjack table.
+            player_hand (HandView): The player's current cards and totals.
+            dealer_upcard (str): Dealer's visible card (e.g., "7C").
+            legal_actions (Iterable[Action]): Set of allowed actions this turn.
+            client (Client): Ollama synchronous client for model interaction.
+
+        Returns:
+            Action: The selected legal action predicted by the model.
         """
         prompt = build_decision_prompt(self.persona, rules, player_hand, dealer_upcard, legal_actions)
         text = self._call_llm_sync(prompt, client)
@@ -187,7 +243,18 @@ class LLMBlackjackPlayer:
             sem: Optional[asyncio.Semaphore] = None,
     ) -> Action:
         """
-        Async version with optional concurrency control via a semaphore.
+        Determines the next blackjack action asynchronously using the LLM.
+
+        Args:
+            rules (BlackjackRules): Configuration of the blackjack table.
+            player_hand (HandView): The player's current cards and totals.
+            dealer_upcard (str): Dealer's visible card (e.g., "7C").
+            legal_actions (Iterable[Action]): Set of allowed actions this turn.
+            async_client (AsyncClient): Asynchronous Ollama client for model interaction.
+            sem (Optional[asyncio.Semaphore]): Optional semaphore to limit concurrency.
+
+        Returns:
+            Action: The selected legal action predicted by the model.
         """
         prompt = build_decision_prompt(self.persona, rules, player_hand, dealer_upcard, legal_actions)
         if sem is None:
@@ -200,6 +267,19 @@ class LLMBlackjackPlayer:
     # ---------
 
     def _call_llm_sync(self, prompt: str, client: Client) -> str:
+        """
+        Executes a synchronous call to the Ollama LLM with retries.
+
+        Args:
+            prompt (str): Fully composed input prompt.
+            client (Client): Ollama synchronous client instance.
+
+        Returns:
+            str: Model-generated response text stripped of whitespace.
+
+        Raises:
+            RuntimeError: If all retry attempts fail.
+        """
         last_err = None
         for _ in range(self.max_retries + 1):
             try:
@@ -215,6 +295,19 @@ class LLMBlackjackPlayer:
         raise RuntimeError(f"Ollama sync call failed after retries: {last_err}")
 
     async def _call_llm_async(self, prompt: str, async_client: AsyncClient) -> str:
+        """
+        Executes an asynchronous call to the Ollama LLM with retries.
+
+        Args:
+            prompt (str): Fully composed input prompt.
+            async_client (AsyncClient): Asynchronous Ollama client instance.
+
+        Returns:
+            str: Model-generated response text stripped of whitespace.
+
+        Raises:
+            RuntimeError: If all retry attempts fail.
+        """
         last_err = None
         for _ in range(self.max_retries + 1):
             try:
@@ -236,11 +329,22 @@ class LLMBlackjackPlayer:
     @staticmethod
     def _parse_action(text: str, legal_actions: Iterable[Action]) -> Action:
         """
-        Map the model's text to a valid action. We:
-          - take the first word,
-          - normalize to lowercase,
-          - accept common synonyms (e.g., 'dd' -> 'double'),
-          - fall back: if nothing matches, choose a safe legal fallback (stand if legal, else hit).
+        Parses and validates the model’s response to map it to a legal action.
+
+        The parser:
+          - Extracts the first token of text.
+          - Normalizes case and checks for common action abbreviations.
+          - Falls back to a safe action order if no valid match is found.
+
+        Args:
+            text (str): Raw model output string.
+            legal_actions (Iterable[Action]): Set of valid actions for this decision.
+
+        Returns:
+            Action: A valid blackjack action parsed from model output.
+
+        Raises:
+            ValueError: If no legal actions are available.
         """
         legal = {a.lower() for a in legal_actions}
         first = re.split(r"\s+", text.strip().lower())[0] if text.strip() else ""
